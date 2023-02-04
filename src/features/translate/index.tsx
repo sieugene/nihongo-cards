@@ -29,11 +29,9 @@ const Translate: FC<Props> = ({ sourceLang, targetLang, meaning, original }) => 
   ]
   return (
     <div>
-      <h1>
-        <Typography variant='caption'>
-          [{sourceLang} {'->'} {targetLang}]
-        </Typography>
-      </h1>
+      <Typography variant='caption'>
+        [{sourceLang} {'->'} {targetLang}]
+      </Typography>
       {items?.map(({ link, caption, translated }, index) => {
         return (
           <ItemTranslate key={index}>
@@ -41,7 +39,7 @@ const Translate: FC<Props> = ({ sourceLang, targetLang, meaning, original }) => 
               {caption}
             </Link>
             <TranslateResult variant='subtitle1'>
-              Translated <Bold>{!translated ? 'not support' : translated}</Bold>
+              Translate <Bold>{!translated ? 'not support' : translated}</Bold>
             </TranslateResult>
           </ItemTranslate>
         )

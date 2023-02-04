@@ -7,20 +7,22 @@ import Snackbar from '@mui/material/Snackbar'
 import { FC, forwardRef, useState } from 'react'
 
 type Props = {
-  data: string
   children: React.ReactNode
+  onClick: () => string
 }
 const Alert = forwardRef<HTMLDivElement, any>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
 })
 
-export const CopyToClipboard: FC<Props> = ({ data, children }) => {
+export const CopyToClipboard: FC<Props> = ({ children, onClick }) => {
   const [open, setOpen] = useState(false)
 
   const handleCopy = () => {
+    const data = onClick()
     if (!data) return
     navigator.clipboard.writeText(data)
     setOpen(true)
+    onClick?.()
   }
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {

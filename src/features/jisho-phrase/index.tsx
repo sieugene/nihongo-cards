@@ -1,35 +1,47 @@
+import { Alert, CircularProgress } from '@mui/material'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
-import { ChangeEvent, forwardRef, useMemo, useState } from 'react'
+import { ChangeEvent, useMemo, useState } from 'react'
 import { useFurigana } from '../furigana-convert/hooks/useFurigana'
 import Translate from '../translate'
 import { useJishoPhrase } from './hooks/useJishoPhrase'
 import { useDebounce } from '@/shared/hooks/useDebounce'
 import { CopyToClipboard } from '@/shared/ui/CopyToClipboard'
 
+const CONSTANT_COPY_AREA = 'copy-area-content'
+
 const JishoPhrase = () => {
   const [input, setInput] = useState('')
-  const { data, isLoading } = useJishoPhrase(input)
-  const { data: furiganaData } = useFurigana(input)
-  const handleChange = useDebounce((event: ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value)
-  }, 500)
+  const { data, isLoading: jishoLoading, error: jishoError } = useJishoPhrase(input)
+  const {
+    data: furiganaData,
+    isLoading: furiganaLoading,
+    error: furiganaError,
+  } = useFurigana(input)
+  const loading = useMemo(() => jishoLoading || furiganaLoading, [furiganaLoading, jishoLoading])
+  const error = useMemo(() => !!jishoError || !!furiganaError, [furiganaError, jishoError])
   const meanings = useMemo(() => {
     if (data?.meanings?.length) {
       return data?.meanings.map((meaning) => meaning.definition)
     }
   }, [data?.meanings])
+  const emptyData = useMemo(() => !meanings?.length, [meanings])
+
+  const copyDOMContent = () => {
+    // React useRef not work correctly
+    return document.getElementById(CONSTANT_COPY_AREA)?.outerHTML || ''
+  }
+  const handleChange = useDebounce((event: ChangeEvent<HTMLInputElement>) => {
+    setInput(event.target.value)
+  }, 500)
 
   return (
     <div>
@@ -42,43 +54,57 @@ const JishoPhrase = () => {
               label='Search kanji meaning'
               variant='outlined'
             />
-            <Typography variant='h5'>Meanings</Typography>
-            {meanings ? (
-              <>
-                <List about='meanings'>
-                  {meanings.map((meaning, index) => {
-                    return (
-                      <ListItem disablePadding key={index}>
-                        <ListItemButton>
-                          <ListItemText primary={meaning} />
-                        </ListItemButton>
-                      </ListItem>
-                    )
-                  })}
-                </List>
-                <Typography variant='h5'>Translate</Typography>
-                <Translate
-                  meaning={meanings?.[0] || ''}
-                  sourceLang='en'
-                  targetLang='ru'
-                  original={input}
-                />
-                <Typography variant='h5'>Furigana</Typography>
-                {furiganaData && (
-                  <div>
-                    <CopyToClipboard data={furiganaData}>
-                      <div dangerouslySetInnerHTML={{ __html: furiganaData }} />
-                    </CopyToClipboard>
-                  </div>
-                )}
-              </>
-            ) : (
-              <Typography>Start search</Typography>
+            {error && (
+              <Alert severity='error' style={{ marginBottom: 10 }}>
+                Has error when fetching data, try again or change search query.
+              </Alert>
             )}
+            <div id={CONSTANT_COPY_AREA}>
+              {loading ? (
+                <CircularProgress />
+              ) : !emptyData ? (
+                <>
+                  <Typography variant='h5'>Furigana</Typography>
+                  {furiganaData && <div dangerouslySetInnerHTML={{ __html: furiganaData }} />}
+                  <Typography variant='h5'>Meanings</Typography>
+                  <List about='meanings'>
+                    {meanings!.map((meaning, index) => {
+                      return (
+                        <ListItem disablePadding key={index}>
+                          <ListItemText primary={meaning} />
+                        </ListItem>
+                      )
+                    })}
+                  </List>
+                  <Typography variant='h5'>Translate</Typography>
+                  <Translate
+                    meaning={meanings?.[0] || ''}
+                    sourceLang='en'
+                    targetLang='ru'
+                    original={input}
+                  />
+                </>
+              ) : (
+                <>
+                  <Alert severity='info' style={{ marginBottom: 10 }}>
+                    Start searching by typing kanji. Example - 学校
+                  </Alert>
+                  <Alert severity='warning'>If not work - try use small combinations kanjis.</Alert>
+                </>
+              )}
+            </div>
           </CardContent>
-          <CardActions>
-            <Button size='small'>Learn More</Button>
-          </CardActions>
+
+          {!emptyData && (
+            <CardActions>
+              <CopyToClipboard onClick={() => furiganaData || ''}>
+                <Typography>Front Side</Typography>
+              </CopyToClipboard>
+              <CopyToClipboard onClick={copyDOMContent}>
+                <Typography>Back Side</Typography>
+              </CopyToClipboard>
+            </CardActions>
+          )}
         </Card>
       </Box>
     </div>
