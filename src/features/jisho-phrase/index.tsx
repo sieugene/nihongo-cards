@@ -1,4 +1,4 @@
-import { Alert, CircularProgress } from '@mui/material'
+import { Alert, CircularProgress, Link } from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -55,9 +55,14 @@ const JishoPhrase = () => {
               variant='outlined'
             />
             {error && (
-              <Alert severity='error' style={{ marginBottom: 10 }}>
-                Has error when fetching data, try again or change search query.
-              </Alert>
+              <div style={{ marginBottom: 10 }}>
+                <Alert severity='error' style={{ marginBottom: 10 }}>
+                  Has error when fetching data, try again or change search query.
+                </Alert>
+                <Link href={`https://jisho.org/search/${input}`} target='_blank'>
+                  Try search in Jisho
+                </Link>
+              </div>
             )}
             <div id={CONSTANT_COPY_AREA}>
               {loading ? (
