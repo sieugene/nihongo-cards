@@ -1,3 +1,4 @@
+import TextField from '@mui/material/TextField'
 import { ChangeEvent, useState } from 'react'
 import { useFurigana } from './hooks/useFurigana'
 import { useDebounce } from '@/shared/hooks/useDebounce'
@@ -11,8 +12,12 @@ const FuriganaConvert = () => {
 
   return (
     <div>
-      <input type='text' onChange={handleChange} />
-      <h2> {isLoading && 'loading...'}</h2>
+      <TextField
+        label='Furigana converter'
+        variant='outlined'
+        type='text'
+        onChange={handleChange}
+      />
 
       {data && <div dangerouslySetInnerHTML={{ __html: data }} />}
     </div>
