@@ -10,12 +10,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiTranslateResponse>,
 ) {
-  const params = req.body as ApiTranslateArgs
+  try {
+    const params = req.body as ApiTranslateArgs
+    const translate = await new GoogleTranslateParser(
+      params.sourceLang || 'en',
+      params.targetLang || 'ja',
+    ).translate(params.text)
 
-  const translate = await new GoogleTranslateParser(
-    params.sourceLang || 'en',
-    params.targetLang || 'ja',
-  ).translate(params.text)
-
-  res.status(200).json(translate)
+    res.status(200).json(translate)
+  } catch (error) {
+    res.status(500).json(error as any)
+  }
 }

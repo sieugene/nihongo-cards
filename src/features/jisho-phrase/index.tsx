@@ -1,5 +1,3 @@
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import MuiAlert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
@@ -10,8 +8,6 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import Snackbar from '@mui/material/Snackbar'
-import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
@@ -20,13 +16,9 @@ import { useFurigana } from '../furigana-convert/hooks/useFurigana'
 import Translate from '../translate'
 import { useJishoPhrase } from './hooks/useJishoPhrase'
 import { useDebounce } from '@/shared/hooks/useDebounce'
-
-const Alert = forwardRef<HTMLDivElement, any>(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
-})
+import { CopyToClipboard } from '@/shared/ui/CopyToClipboard'
 
 const JishoPhrase = () => {
-  const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const { data, isLoading } = useJishoPhrase(input)
   const { data: furiganaData } = useFurigana(input)
@@ -39,26 +31,8 @@ const JishoPhrase = () => {
     }
   }, [data?.meanings])
 
-  const onCopy = () => {
-    if (!furiganaData) return
-    navigator.clipboard.writeText(furiganaData)
-    setOpen(true)
-  }
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpen(false)
-  }
-
   return (
     <div>
-      <Snackbar open={open} autoHideDuration={500} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='success' sx={{ width: '100%' }}>
-          Text was copied!
-        </Alert>
-      </Snackbar>
       <Box sx={{ minWidth: 275 }}>
         <Card variant='outlined'>
           <CardContent>
@@ -92,11 +66,9 @@ const JishoPhrase = () => {
                 <Typography variant='h5'>Furigana</Typography>
                 {furiganaData && (
                   <div>
-                    <div dangerouslySetInnerHTML={{ __html: furiganaData }} />
-                    <Button onClick={onCopy} variant='contained'>
-                      copy
-                      <ContentCopyIcon />
-                    </Button>
+                    <CopyToClipboard data={furiganaData}>
+                      <div dangerouslySetInnerHTML={{ __html: furiganaData }} />
+                    </CopyToClipboard>
                   </div>
                 )}
               </>
