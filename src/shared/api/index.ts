@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { FuriganaConvertArgs, FuriganaConvertResponse } from '@/pages/api/furigana'
 import { ApiJishoArgs, ApiJishoResponse } from '@/pages/api/jisho'
+import { ApiTranslateArgs, ApiTranslateResponse } from '@/pages/api/translate'
 
 export const API = {
   baseEndpoint: '/api/',
@@ -10,6 +11,10 @@ export const API = {
     }),
   jishoPhrase: (args: ApiJishoArgs) =>
     axios.post<ApiJishoResponse>(`${API.baseEndpoint}/jisho`, {
+      ...args,
+    }),
+  translate: (args: ApiTranslateArgs) =>
+    axios.post<ApiTranslateResponse>(`${API.baseEndpoint}/translate`, {
       ...args,
     }),
 }

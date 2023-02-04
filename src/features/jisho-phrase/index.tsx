@@ -1,5 +1,6 @@
 import { ChangeEvent, useMemo, useState } from 'react'
 
+import Translate from '../translate'
 import { useJishoPhrase } from './hooks/useJishoPhrase'
 import { useDebounce } from '@/shared/hooks/useDebounce'
 
@@ -26,6 +27,7 @@ const JishoPhrase = () => {
             return <li key={index}>{meaning}</li>
           })}
       </ul>
+      <Translate text={meanings?.[0] || ''} sourceLang='en' targetLang='ru' />
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { SWRConfig } from 'swr'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SWRConfig value={{ provider: () => new Map() }}>
+    <SWRConfig value={{ provider: () => new Map(), revalidateOnFocus: false }}>
       <Component {...pageProps} />
     </SWRConfig>
   )
