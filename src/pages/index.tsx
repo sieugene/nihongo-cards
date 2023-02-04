@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <Container maxWidth='lg' style={{ marginTop: 15 }}>
-        <FuriganaConvert />
+        {/* <FuriganaConvert /> */}
         <JishoPhrase />
       </Container>
     </>
