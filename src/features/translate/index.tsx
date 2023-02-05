@@ -39,7 +39,7 @@ const Translate: FC<Props> = ({ sourceLang, targetLang, meaning, original }) => 
               {caption}
             </Link>
             <TranslateResult variant='subtitle1'>
-              Translate <Bold>{!translated ? 'not support' : translated}</Bold>
+              <Bold>{translated || '-'}</Bold>
             </TranslateResult>
           </ItemTranslate>
         )

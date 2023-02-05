@@ -1,20 +1,25 @@
 import styled from '@emotion/styled'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import MuiAlert from '@mui/material/Alert'
-import Button from '@mui/material/Button'
 
 import Snackbar from '@mui/material/Snackbar'
-import { FC, forwardRef, useState } from 'react'
+import React, { ComponentType, FC, forwardRef, useState } from 'react'
 
 type Props = {
   children: React.ReactNode
   onClick: () => string
+  wrapper?: ComponentType
+  onContainerClick?: boolean
 }
 const Alert = forwardRef<HTMLDivElement, any>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
 })
 
-export const CopyToClipboard: FC<Props> = ({ children, onClick }) => {
+export const CopyToClipboard: FC<Props> = ({
+  children,
+  onClick,
+  wrapper,
+  onContainerClick = false,
+}) => {
   const [open, setOpen] = useState(false)
 
   const handleCopy = () => {
@@ -31,8 +36,9 @@ export const CopyToClipboard: FC<Props> = ({ children, onClick }) => {
     setOpen(false)
   }
 
+  const Wrapper = wrapper || Div
   return (
-    <>
+    <Wrapper onClick={() => onContainerClick && handleCopy()}>
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -43,15 +49,14 @@ export const CopyToClipboard: FC<Props> = ({ children, onClick }) => {
           Text was copied!
         </Alert>
       </Snackbar>
-      <CopyBtn onClick={handleCopy} variant='outlined'>
-        {children}
-        <ContentCopyIcon />
-      </CopyBtn>
-    </>
+      <CopyBtn onDoubleClick={handleCopy}>{children}</CopyBtn>
+    </Wrapper>
   )
 }
 
-const CopyBtn = styled(Button)`
+const Div = styled.div``
+
+const CopyBtn = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;

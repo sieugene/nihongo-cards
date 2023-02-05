@@ -3,18 +3,23 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import JishoAPI from 'unofficial-jisho-api'
 
 export type ApiJishoArgs = { phrase: string }
-export type ApiJishoResponse = Awaited<ReturnType<JishoAPI['scrapeForPhrase']>>
+export type ApiJishoResponse = {
+  scrape: Awaited<ReturnType<JishoAPI['scrapeForPhrase']>>
+  search: Awaited<ReturnType<JishoAPI['searchForPhrase']>>
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiJishoResponse>) {
   try {
     const params = req.body as ApiJishoArgs
+    const api = new JishoAPI()
+    const scrape = await api.scrapeForPhrase(params.phrase)
+    const search = await api.searchForPhrase(params.phrase)
 
-    const result = await new JishoAPI().scrapeForPhrase(params.phrase)
-    if (!result.found) {
-      return res.status(404).json('not found' as any)
-    }
-    res.status(200).json(result)
+    return res.status(200).json({
+      scrape,
+      search,
+    })
   } catch (error) {
-    res.status(500).json(error as any)
+    return res.status(500).json(error as any)
   }
 }
