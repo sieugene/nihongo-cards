@@ -7,7 +7,11 @@ export const useJishoPhrase = (input: string) => {
 
     return {
       meanings: response?.data?.scrape?.meanings?.map((meaning) => meaning?.definition),
-      slugs: response?.data?.search?.data?.map((search) => search?.slug),
+      slugs: response?.data?.search?.data?.map((search) => {
+        const slug = search.slug
+        const sense = search?.senses?.[0]?.english_definitions
+        return `${slug}  (${sense || '-'})`
+      }),
     }
   })
 }
