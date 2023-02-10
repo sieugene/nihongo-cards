@@ -1,3 +1,39 @@
+## Description
+
+Generates a card based on entering a word or kanji, resulting in a card with meanings, translation, furigana, and links to sources.
+
+## How to use
+
+Terminal
+
+```bash
+  yarn install
+```
+
+```bash
+  yarn dev
+```
+
+Open broswer
+
+```
+localhost:3000
+```
+
+## Usage
+
+Input field
+
+```
+Search variants [学校、がっこう、gakkou]
+```
+
+Result
+
+```
+Click "copy card" and add in your Anki (as HTML)
+```
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
