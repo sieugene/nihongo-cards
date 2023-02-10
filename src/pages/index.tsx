@@ -11,7 +11,6 @@ export default function Home() {
     <>
       <Container maxWidth='lg' style={{ marginTop: 15 }}>
         <SmartCard />
-        <EditableFurigana />
       </Container>
     </>
   )

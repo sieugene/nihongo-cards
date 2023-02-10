@@ -14,11 +14,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const api = new JishoAPI()
     const scrape = await api.scrapeForPhrase(params.phrase)
     const search = await api.searchForPhrase(params.phrase)
+    const data = { scrape, search }
+    if (!scrape.found && !search.data?.length) {
+      throw new Error(data as any)
+    }
 
-    return res.status(200).json({
-      scrape,
-      search,
-    })
+    return res.status(200).json(data)
   } catch (error) {
     return res.status(500).json(error as any)
   }
