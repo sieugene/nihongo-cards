@@ -23,7 +23,7 @@ export const SmartCard = () => {
   const [search, setSearch] = useState('')
   const { isLoading, data, error } = useJishoPhrase(search)
 
-  const inputFilled = useMemo(() => search?.length > 1, [search?.length])
+  const inputFilled = useMemo(() => search?.length >= 1, [search?.length])
   const meaningsEmpty = useMemo(() => !data?.meanings?.length, [data?.meanings])
   const slugsEmpty = useMemo(() => !data?.slugs?.length, [data?.slugs])
   const showSlugs = useMemo(() => meaningsEmpty && !slugsEmpty, [meaningsEmpty, slugsEmpty])
