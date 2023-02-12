@@ -4,6 +4,8 @@ import Kuroshiro from 'kuroshiro'
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+const dictPath = path.join(process.cwd(), 'public', 'dictionary')
+
 export type FuriganaConvertArgs = { text: string }
 export type FuriganaConvertResponse = { furigana: string; onlyHiragana: string; okurigana: string }
 
@@ -16,7 +18,7 @@ export default async function handler(
     const kuroshiro = new Kuroshiro()
     await kuroshiro.init(
       new KuromojiAnalyzer({
-        dictPath: path.join(__dirname, '..', '..', 'dictionary'),
+        dictPath,
       }),
     )
     const furigana = await kuroshiro.convert(params?.text, { to: 'hiragana', mode: 'furigana' })
