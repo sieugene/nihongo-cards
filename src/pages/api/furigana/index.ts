@@ -1,3 +1,5 @@
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import path from 'path'
 import Kuroshiro from 'kuroshiro'
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -12,7 +14,11 @@ export default async function handler(
   try {
     const params = req.body as FuriganaConvertArgs
     const kuroshiro = new Kuroshiro()
-    await kuroshiro.init(new KuromojiAnalyzer({ dictPath: 'public/dictionary' }))
+    await kuroshiro.init(
+      new KuromojiAnalyzer({
+        dictPath: path.join(__dirname, '..', '..', 'dictionary'),
+      }),
+    )
     const furigana = await kuroshiro.convert(params?.text, { to: 'hiragana', mode: 'furigana' })
     const onlyHiragana = await kuroshiro.convert(params?.text, { to: 'hiragana', mode: 'normal' })
     const okurigana = await kuroshiro.convert(params?.text, { to: 'hiragana', mode: 'okurigana' })
